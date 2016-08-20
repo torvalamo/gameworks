@@ -1,0 +1,116 @@
+* {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+}
+
+g-scene, g-window, g-modal, g-modal::before {
+  position: absolute;
+  display: block;
+}
+
+g-scene {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: all 1s 0.2s ease-in-out;
+  z-index: 0;
+  background-color: #000011;
+}
+
+g-scene.current {
+  opacity: 1;
+  z-index: 1;
+}
+
+g-window {
+  top: 50%;
+  width: 500px;
+  height: 300px;
+  border: 1px solid rgba(127, 127, 255, 0.5);
+  transition: all 0.1s ease-in-out;
+  transform: translateY(-50%);
+  left: -100%;
+  z-index: 8;
+}
+
+g-window.open {
+  transform: translateX(0);
+}
+
+g-title {
+  display: block;
+  color: #eee;
+  text-align: center;
+}
+
+g-button {
+  display: block;
+  width: auto;
+  border: 1px solid yellow;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+}
+
+:host(g-window) g-title {
+  height: 20px;
+  font-size: 20px;
+  font-family: Helvetica;
+  text-align: left;
+  background-color: blue;
+}
+
+:host(g-window.closeable) g-title {
+  display: inline-block;
+  width: calc(100% - 20px);
+}
+
+:host(g-window) g-button {
+  display: none;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+}
+
+:host(g-window.closeable) g-button {
+  display: inline-block;
+}
+
+g-modal {
+  border: 1px solid yellow;
+  background-color: green;
+  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+g-modal::before {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+:host(g-modal) g-title {
+  display: block;
+  width: 100%;
+  height: 20px;
+  font-size: 16px;
+  font-family: Helvetica;
+}

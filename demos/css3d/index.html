@@ -1,0 +1,68 @@
+<!doctype html>
+<script src="vec3.js"></script>
+<script src="poly.js"></script>
+<link href="world.css" rel="stylesheet">
+<style>
+  main {
+    top: 0;
+    left: 0;
+    background-image: url(grid.png);
+    background-blend-mode: multiply;
+  }
+  
+  section {
+    width: 800px;
+    height: 640px;
+    background-color: darkgray;
+    background-image: url(grid8.png);
+    background-blend-mode: multiply;
+    border: 2px solid black;
+  }
+</style>
+
+<main>
+  <section>
+    <figure style="transform:translateX(32px) translateY(64px) translateZ(0px)">
+      <div style="width:24px;height:24px;transform:rotateX(180deg);"></div>
+      <div style="width:24px;height:80px;transform:rotateX(-90deg) rotateY(180deg) translateX(-24px);"></div>
+      <div style="width:24px;height:80px;transform:rotateX(-90deg) rotateY(-90deg);"></div>
+      <div style="width:24px;height:80px;transform:rotateX(-90deg) translateZ(24px);"></div>
+      <div style="width:24px;height:80px;transform:rotateX(-90deg) translateZ(24px) rotateY(90deg) translateZ(24px);"></div>
+      <div style="width:24px;height:24px;transform:translateY(24px) translateZ(80px);"></div>
+    </figure>
+    <figure style="transform:translateX(240px) translateY(196px);" id="poly">
+    </figure>
+  </section>
+</main>
+
+<template id="cube" vars="x,y,z,dX,dY,dZ">
+  <figure style="transform:translateX({x}px) translateY({y}px) translateZ({z}px)">
+    <div style="width:{dX}px;height:{dY}px;transform:rotateX(180deg);"></div>
+    <div style="width:{dX}px;height:{dZ}px;transform:rotateX(-90deg) rotateY(180deg) translateX({dX}px);"></div>
+    <div style="width:{dY}px;height:{dZ}px;transform:rotateX(-90deg) rotateY(-90deg);"></div>
+    <div style="width:{dX}px;height:{dZ}px;transform:rotateX(-90deg) translateZ({dY}px);"></div>
+    <div style="width:{dY}px;height:{dZ}px;transform:rotateX(-90deg) translateZ({dY}px) rotateY(90deg) translateZ({dX}px);"></div>
+    <div style="width:{dX}px;height:{dY}px;transform:translateY({dY}px) translateZ({dZ}px);"></div>
+  </figure>
+</template>
+
+<template id="triangle" vars="ax,ay,az,bx,by,bz,cx,cy,cz">
+  <div style="width:height:{pointLineDistance([cx, cy, cz], [ax, ay, az], [bx, by, bz])}px;"></div>
+</template>
+
+<template id="triangle" vars="ow, oh, iw, ih, r, s, tx, ty, tz, rx, ry, rz">
+  <!-- outer width, outer height, inner width, inner height, rotation, skew -->
+  <div style="width:{ow}px;height:{oh}px;transform:translateX({tx}px) translateY({ty}px) translateZ({tz}px) rotateX({rx}deg) rotateY({ry}deg) rotateZ({rz}deg);transform-origin:top {x}px;">
+    <div style="width:{iw}px;height:{ih}px;transform:translateX({cx}px) rotateZ({r}deg) skewX({s}deg);"></div>
+  </div>
+</template>
+
+<script>
+  var poly = document.getElementById('poly')
+  function tri(ax, ay, az, bx, by, bz, cx, cy, cz) {
+    poly.innerHTML += triangle([ax, ay, az], [bx, by, bz], [cx, cy, cz])
+  }
+  
+  tri(0, 0, 0, 128, 0, 0, 32, -64, 16)
+  tri(128, 0, 0, 256, -100, 0, 32, -64, 16)
+</script>

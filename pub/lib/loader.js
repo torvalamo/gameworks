@@ -1,0 +1,4 @@
+(()=>{
+  const scenes = {};
+  this.gw = {};
+})();

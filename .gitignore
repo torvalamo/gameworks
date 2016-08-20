@@ -1,0 +1,6 @@
+# exclude tmp and log files created by npm and minifiers
+**/*.tmp
+**/*.log
+
+# exclude node_modules
+/node_modules

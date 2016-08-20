@@ -1,0 +1,22 @@
+g-group#mainmenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid lightblue;
+  padding: 5px;
+}
+
+g-group#mainmenu g-title {
+  margin: 5px 10px;
+}
+
+g-group#mainmenu g-button {
+  margin: 5px;
+}
+
+g-window#optionswindow.open {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
