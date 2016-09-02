@@ -1,0 +1,31 @@
+button {
+  display: inline-block;
+  padding: 5px 20px;
+  background-color: #000;
+  color: #fff;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #111;
+}
+
+button:active {
+  background-color: #333;
+}
+
+button img {
+  display: none;
+}
+
+button img[src] {
+  display: inline-block;
+}
+
+button span {
+  display: block;
+}
+
+button * {
+  cursor: inherit;
+}

@@ -1,0 +1,5 @@
+div.box {
+  position: absolute;
+  border: 1px solid black;
+  background-color: white;
+}

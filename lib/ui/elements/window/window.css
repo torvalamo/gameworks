@@ -1,0 +1,12 @@
+div.window {
+  position: absolute;
+  width: 30%;
+  height: 80%;
+  top: 10%;
+  left: 3%;
+  z-index: 8;
+}
+
+div.window > div.title:empty {
+  
+}

@@ -1,0 +1,9 @@
+div.tabs {}
+
+div.tabs_header {}
+
+div.tabs_header div.button {}
+
+div.tabs_header div.button.active {}
+
+div.tabs_header div.button.disabled {}
