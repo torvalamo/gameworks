@@ -1,0 +1,88 @@
+<!doctype html>
+<script src="../terrain/seedrandom.js"></script>
+<script src="mapgen.js"></script>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    width: 100%;
+    height: 100%;
+  }
+  body {
+    background-color: #333;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    margin: 10px;
+  }
+  div {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+    padding: 5px 20px;
+    color: white;
+    font-size: 20px;
+  }
+  div * {
+    font-size: 16px;
+  }
+  input[size="3"] {
+    text-align: right;
+  }
+  button {
+    border-radius: none;
+    padding: 2px 10px;
+  }
+  canvas {
+    border: 1px solid #ccc;
+    /*width: 100%;
+    height: calc(100% - 40px);*/
+  }
+</style>
+<div>
+  seed: <input id="seed" type="text" size="20" value="somethingrandom">
+  w: <input id="width" type="text" size="3" maxlength="3" pattern="[1-9][0-9]" title="Between 10 and 99" value="16">
+  h: <input id="height" type="text" size="3" maxlength="3" pattern="[1-9][0-9]" title="Between 10 and 99" value="10">
+  magnitude: <input id="magnitude" type="text" size="1" maxlength="1" pattern="[1-9]" title="Between 1 and 9" value="1">
+  <button id="generate">Generate!</button>
+</div>
+<canvas id="map" width="640" height="480"></canvas>
+<script>
+  var seed = document.getElementById('seed');
+  var width = document.getElementById('width');
+  var height = document.getElementById('height');
+  var magnitude = document.getElementById('magnitude');
+  var generate = document.getElementById('generate');
+  var canvas = document.getElementById('map');
+  var ctx = canvas.getContext('2d', {alpha: false});
+  //var mapgen = new MapGen(canvas);
+  var map = new HexMap(40, 12, 8, canvas);
+  map.draw(new Point(0, 0), 1, -1);
+  generate.addEventListener('click', () => {
+    /*mapgen.generate(seed.value, 
+                    parseInt(width.value), 
+                    parseInt(height.value), 
+                    parseInt(magnitude.value));*/
+  });
+  canvas.addEventListener('mousemove', e => {
+    //var bcr = canvas.getBoundingClientRect();
+    //var x = e.clientX - bcr.left;
+    //var y = e.clientY - bcr.top;
+    map.draw(new Point(0, 0), 1, e.region);
+    //ctx.drawImage(map.canvas, 0, 0);
+  });
+  canvas.addEventListener('mouseover', e => {
+    map.draw(new Point(0, 0), 1, e.region);
+  });
+  canvas.addEventListener('mouseout', e => {
+    map.draw(new Point(0, 0), 1, e.region);
+  });
+  canvas.addEventListener('mousedown', e => {
+    map.draw(new Point(0, 0), 1, e.region, true);
+  });
+  canvas.addEventListener('mouseup', e => {
+    map.draw(new Point(0, 0), 1, e.region);
+  });
+</script>

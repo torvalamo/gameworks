@@ -17,7 +17,7 @@ gw.add(
 gw.add(
   gw.scene('main-menu').add(
     gw.box('menu-box').add(
-      gw.text('menu-title').set('Main Menu'),
+      gw.text('menu-title').set('Main Menu').addClass('title'),
       gw.button('menu-new').set('New Game')
         .on('click', () => gw('new-game').open()),
       gw.button('menu-join').set('Join Game').disable()
@@ -32,11 +32,16 @@ gw.add(
     ),
     gw.window('new-game').title('New Game').group('menu').hide().add(
       gw.pane('new-left').add(
-
+        gw.canvas('new-canvas').size(640, 480)
+      ),
+      gw.pane('new-right').add(
+        
       )
     ),
-    gw.window('join-game').set('Join Game').group('menu').hide(),
-    gw.window('load-game').set('Load Game').group('menu').hide()
+    gw.window('join-game').set('Join Game').group('menu').hide().add(
+    ),
+    gw.window('load-game').set('Load Game').group('menu').hide().add(
+    )
   )
 );
 
@@ -45,7 +50,7 @@ gw.add(
  */
 gw.add(
   gw.scene('game').add(
-    gw.canvas('game-canvas')
+    gw.canvas('game-canvas').size(1280, 960)
   )
 );
 
