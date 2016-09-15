@@ -1,45 +1,44 @@
 class Tile {
   constructor(id, pointSet, mapWidth, mapHeight) {
     this.id = id;
-    this.pointSet = pointSet;
     this.pointSets = [pointSet]
     
-    var rect = this.pointSet.rectangle;
+    var rect = pointSet.rectangle;
     // X border overlap
     if (rect.p1.x < 0) { 
       // left has right twin
-      this.pointSets.push(this.pointSet.translate(mapWidth, 0));
-    } else if (rect.p2.x >= mapWidth) { 
+      this.pointSets.push(pointSet.translate(mapWidth, 0));
+    } else if (rect.p2.x > mapWidth) { 
       // right has left twin
-      this.pointSets.push(this.pointSet.translate(-mapWidth, 0));
+      this.pointSets.push(pointSet.translate(-mapWidth, 0));
     }
     
     // Y border overlap
     if (rect.p1.y < 0) { 
       // top has bottom twin
-      this.pointSets.push(this.pointSet.translate(0, mapHeight));
-    } else if (rect.p2.y >= mapHeight) { 
+      this.pointSets.push(pointSet.translate(0, mapHeight));
+    } else if (rect.p2.y > mapHeight) { 
       // bottom has top twin
-      this.pointSets.push(this.pointSet.translate(0, -mapHeight));
+      this.pointSets.push(pointSet.translate(0, -mapHeight));
     }
     
     // X and Y border overlap (additional diagonal twin)
     if (rect.p1.x < 0 && rect.p1.y < 0) {
       // top left has bottom right twin
-      this.pointSets.push(this.pointSet.translate(mapWidth, mapHeight));
-    } else if (rect.p1.x < 0 && rect.p2.y >= mapHeight) {
+      this.pointSets.push(pointSet.translate(mapWidth, mapHeight));
+    } else if (rect.p1.x < 0 && rect.p2.y > mapHeight) {
       // bottom left has top right twin
-      this.pointSets.push(this.pointSet.translate(mapWidth, -mapHeight));
-    } else if (rect.p2.x >= mapWidth && rect.p1.y < 0) {
+      this.pointSets.push(pointSet.translate(mapWidth, -mapHeight));
+    } else if (rect.p2.x > mapWidth && rect.p1.y < 0) {
       // top right has bottom left twin
-      this.pointSets.push(this.pointSet.translate(-mapWidth, mapHeight));
-    } else if (rect.p2.x >= mapWidth && rect.p2.y >= mapHeight) {
+      this.pointSets.push(pointSet.translate(-mapWidth, mapHeight));
+    } else if (rect.p2.x > mapWidth && rect.p2.y > mapHeight) {
       // bottom right has top left twin
-      this.pointSets.push(this.pointSet.translate(-mapWidth, -mapHeight));
+      this.pointSets.push(pointSet.translate(-mapWidth, -mapHeight));
     }
     
-    console.assert(this.pointSets.length < 4, 'Tile has too many twins: ', this);
-    // original + any twins (0-3)
+    console.assert(this.pointSets.length <= 4, 'Tile has too many twins: ', this);
+    // original + any twins (0-3), min 1, max 4
     
     
     
@@ -55,7 +54,7 @@ class Tile {
   addLink(tile) {
     this.links[tile.id] = tile;
   }
-  relative(p0, ratio, aw, ah) {
+  /*relative(p0, ratio, aw, ah) {
     aw = aw || 0;
     ah = ah || 0;
     var path = new Path2D();
@@ -67,8 +66,9 @@ class Tile {
     });
     path.closePath();
     return this.path = path;
-  }
-  inView(...viewRects) {
+  }*/
+  getTileViews(...viewRects) {
+    console.log(viewRects);
     // any point set should only be in one view,
     // because drawing the translations will take care of overlaps
     // so we dont want to draw the same area twice

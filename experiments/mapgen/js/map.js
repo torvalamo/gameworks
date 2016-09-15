@@ -14,6 +14,14 @@ class Map {
     this.view = [new Point(0, 0), 1];
     this.tiles = [];
     this.regions = [];
+    
+    this.viewRects = [
+      new Rectangle(new Point(0, 0), 
+                    new Point(width, height))
+    ];
+    this.viewTrans = [
+      new Point(0, 0)
+    ];
   }
   resize(width, height) {
     this.width = this.canvas.width = width;
@@ -22,59 +30,92 @@ class Map {
   click(region, buttons, ctrlKey, shiftKey, altKey) {
     console.log(region, buttons, this.tiles[region]);
   }
-  draw(p1, zoom) {
-    this.view = [p1, zoom];
+  rescale(origin) {
+    console.log('in map.rescale', origin);
+    var p1 = origin;
+    var p2 = new Point(p1.x + this.width / origin.z,
+                       p1.y + this.height / origin.z);
+    var p3 = new Point(p2.x % this.width,
+                       p2.y % this.height);
+    var viewRects, viewTrans;
+    if (p2.x > this.width && p2.y < this.height) {
+      viewRects = [
+        new Rectangle(new Point(p1.x, p1.y), 
+                      new Point(this.width, p3.y)),
+        new Rectangle(new Point(0, p1.y), 
+                      new Point(p3.x, p3.y))
+      ];
+      viewTrans = [
+        new Point(0, 0),
+        new Point(-this.width, 0)
+      ];
+    } else if (p2.x < this.width && p2.y > this.height) {
+      viewRects = [
+        new Rectangle(new Point(p1.x, p1.y), 
+                      new Point(p3.x, this.height)),
+        new Rectangle(new Point(p1.x, 0), 
+                      new Point(p3.x, p3.y))
+      ];
+      viewTrans = [
+        new Point(0, 0),
+        new Point(0, -this.height)
+      ];
+    } else if (p2.x > this.width && p2.y > this.width) {
+      viewRects = [
+        new Rectangle(new Point(p1.x, p1.y), 
+                      new Point(this.width, this.height)),
+        new Rectangle(new Point(0, p1.y), 
+                      new Point(p3.x, this.height)),
+        new Rectangle(new Point(p1.x, 0), 
+                      new Point(this.width, p3.y)),
+        new Rectangle(new Point(0, 0), 
+                      new Point(p3.x, p3.y))
+      ];
+      viewTrans = [
+        new Point(0, 0),
+        new Point(-this.width, 0),
+        new Point(0, -this.height),
+        new Point(-this.width, -this.height)
+      ];
+    } else {
+      viewRects = [
+        new Rectangle(new Point(p1.x, p1.y), 
+                      new Point(p2.x, p2.y))
+      ];
+      viewTrans = [
+        new Point(0, 0)
+      ];
+    }
+    this.viewRects = viewRects;
+    this.viewTrans = viewTrans;
+  }
+  draw(origin) {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, this.width, this.height);
-    // draw the map area corresponding to the given rectangle
-    // and stretch it to fit the current canvas size
-    var x2 = (p1.x + (this.width - 1) / zoom) % this.width;
-    var y2 = (p1.y + (this.height - 1) / zoom) % this.height;
-    var p2 = new Point(x2, y2);
-    var regions = [];
-    console.log(p1, p2, this.width, this.height, zoom);
-    this.tiles.forEach(tile => {
-      var path;
-      if (tile.inView(p1, p2, 0, 0)) {
-        //console.log('in view', tile);
-        path = tile.relative(p1, zoom);
-        regions.push({
-          path: path,
-          id: tile.id
+    if (origin) {
+      this.rescale(origin);
+      var regions = [];
+      this.tiles.forEach(tile => {
+        console.log('in tile', tile.id);
+        tile.getTileViews(...this.viewRects).forEach((pointSets, vrIdx) => {
+          pointSets.forEach((pointSet, idx) => {
+            console.log(pointSet, tile);
+            var path = pointSet.translate(this.viewTrans[vrIdx]).toPath();
+            regions.push({
+              path: path,
+              id: tile.id
+            });
+          });
         });
-        this.ctx.fillStyle = tile.color;
-        this.ctx.fill(path);
-      }
-      if (tile.wrapX) {
-        var aw = tile.wrapX * this.width;
-        var wx1 = p1.translate(aw, 0);
-        var wx2 = p2.translate(aw, 0);
-        if (tile.inView(wx1, wx2, aw, 0)) {
-          path = tile.relative(p1, zoom, aw, 0);
-          regions.push({
-            path: path,
-            id: tile.id
-          });
-          this.ctx.fillStyle = tile.color;
-          this.ctx.fill(path);
-        }
-      }
-      if (tile.wrapY) {
-        var ah = tile.wrapY * this.height;
-        var wy1 = p1.translate(0, ah);
-        var wy2 = p2.translate(0, ah);
-        if (tile.inView(wy1, wy2, 0, ah)) {
-          path = tile.relative(p1, zoom, 0, ah);
-          regions.push({
-            path: path,
-            id: tile.id
-          });
-          this.ctx.fillStyle = tile.color;
-          this.ctx.fill(path);
-        }
-      }
+      });
+      this.regions = regions;
+    }
+    this.regions.forEach(region => {
+      var tile = this.tiles[region.id];
+      this.ctx.fillStyle = tile.color;
+      this.ctx.fill(region.path);
     });
-    return this.regions = regions;
+    return this.regions;
   }
 }
 
@@ -84,7 +125,9 @@ class SquareMap extends Map {
     var sizeX = width / dx;
     var sizeY = height / dy;
     this.opts = Object.assign({
-      pointLinks: false
+      pointLinks: false,
+      continuousX: true,
+      continuousY: true
     }, opts);
     this.tiles = Array(dx * dy).fillFunc(idx => {
       var anchor = new Point((idx % dx) * sizeX, Math.floor(idx / dx) * sizeY);
@@ -101,6 +144,7 @@ class SquareMap extends Map {
       );
       return new Tile(idx, pointset, width, height);
     });
+    /*
     // TODO: Make better.....
     this.tiles.forEach((tile, idx) => {
       // to left
@@ -169,7 +213,7 @@ class SquareMap extends Map {
           tile.addLink(this.tiles[idx + dx + 1]);
         }
       }
-    });
+    });*/
   }
 }
 

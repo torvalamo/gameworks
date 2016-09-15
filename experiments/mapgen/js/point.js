@@ -1,14 +1,16 @@
 class Point {
-  constructor(x, y) {
+  constructor(x, y, z) {
     this.x = x;
     this.y = y;
+    this.z = z || 0;
   }
-  translate(x, y) {
-    return new Point(this.x + x, this.y + y);
+  translate(x, y, z) {
+    return new Point(this.x + x, this.y + y, this.z + (z || 0));
   }
-  scale(origin, amount) {
-    return new Point((this.x - origin.x) * amount,
-                     (this.y - origin.y) * amount);
+  scale(delta) {
+    return new Point((this.x - delta.x) * delta.z,
+                     (this.y - delta.y) * delta.z,
+                     this.z);
   }
 }
 
@@ -21,11 +23,26 @@ class PointSet {
       new Point(Math.min(...xs), Math.min(...ys)),
       new Point(Math.max(...xs), Math.max(...ys)));
   }
-  translate(x, y) {
-    return new PointSet(this.points.map(point => point.translate(x, y)));
+  translate(x, y, z) {
+    return new PointSet(this.points.map(point => {
+      return point.translate(x, y, z);
+    }));
   }
-  scale(origin, amount) {
-    return new PointSet(this.points.scale(point => point.scale(origin, amount)));
+  scale(delta) {
+    return new PointSet(this.points.map(point => {
+      return point.scale(delta);
+    }));
+  }
+  toPath() {
+    if (this.path) return this.path;
+    var path = new Path2D();
+    this.points.forEach((point, idx) => {
+      console.log(point.x, point.y);
+      if (!idx) path.moveTo(point.x, point.y);
+      else path.lineTo(point.x, point.y);
+    });
+    path.closePath();
+    return this.path = path;
   }
 }
 
