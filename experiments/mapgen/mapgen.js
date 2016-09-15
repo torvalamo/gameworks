@@ -68,7 +68,7 @@ class Tile {
   makePath(center, zoom) {
     var path = new Path2D();
     this.points.forEach((point, idx) => {
-      point = point.relative(center, zoom);
+      point = point.scale(center, zoom);
       if (idx) path.lineTo(point.x, point.y);
       else path.moveTo(point.x, point.y);
     });
@@ -85,7 +85,7 @@ class SquareTile extends Tile {
     this.size = size;
   }
   makePath(center, zoom) {
-    var from = this.from.relative(center, zoom);
+    var from = this.from.scale(center, zoom);
     //var to = this.to.relative(center, zoom);
     var path = new Path2D();
     path.rect(from.x, from.y, this.size, this.size);
@@ -117,36 +117,6 @@ class HexTile extends Tile {
       top.add(-pxw, pxh / 2)
     ];
   }
-}
-
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  relative(point, zoom) {
-    return new Point((this.x - point.x) * zoom, 
-                     (this.y - point.y) * zoom);
-  }
-  add(x, y) {
-    return new Point(this.x + x, this.y + y);
-  }
-}
-
-function random(min, max) {
-  if (typeof max == 'undefined') {
-    max = min;
-    min = 0;
-  }
-  return Math.floor(Math.random() * (max + 1 - min)) + min;
-}
-
-function zerofill(string, length) {
-  if (string.length >= length) return string;
-  if (string.padStart) return string.padStart(length, '0');
-  string = '0'.repeat(length - string.length) + string;
-  console.log(string);
-  return string;
 }
 
 class MapGen {
@@ -290,30 +260,4 @@ class MapGen {
     node.dy = dy;
   }
 }
-  
-function nmod(n, m) { // negative "wrap around" modulo
-  return ((n % m) + m) % m;
-}
 
-Array.prototype.fillFunc = function(func) {
-  for (let i = 0, len = this.length; i < len; i++) {
-    this[i] = func(i);
-  }
-  return this;
-}
-
-function zip(a, b, func) {
-  var c = Array(Math.min(a.length, b.length));
-  for (var i = 0, len = Math.min(a.length, b.length); i < len; i++) {
-    c[i] = func(a[i], b[i]);
-  }
-  return c;
-}
-
-Math.deg2rad = function(a) {
-  return a * Math.PI / 180;
-}
-
-Math.rad2deg = function(a) {
-  return a * 180 / Math.PI;
-}

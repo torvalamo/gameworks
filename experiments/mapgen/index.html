@@ -1,6 +1,10 @@
 <!doctype html>
 <script src="../terrain/seedrandom.js"></script>
-<script src="mapgen.js"></script>
+<script src="js/utility.js"></script>
+<script src="js/point.js"></script>
+<script src="js/tile.js"></script>
+<script src="js/map.js"></script>
+<script src="js/mapview.js"></script>
 <style>
   * {
     box-sizing: border-box;
@@ -37,26 +41,46 @@
   }
   canvas {
     border: 1px solid #ccc;
+    cursor: default;
     /*width: 100%;
     height: calc(100% - 40px);*/
   }
 </style>
-<div>
+<!--div>
   seed: <input id="seed" type="text" size="20" value="somethingrandom">
   w: <input id="width" type="text" size="3" maxlength="3" pattern="[1-9][0-9]" title="Between 10 and 99" value="16">
   h: <input id="height" type="text" size="3" maxlength="3" pattern="[1-9][0-9]" title="Between 10 and 99" value="10">
   magnitude: <input id="magnitude" type="text" size="1" maxlength="1" pattern="[1-9]" title="Between 1 and 9" value="1">
   <button id="generate">Generate!</button>
-</div>
+</div-->
 <canvas id="map" width="640" height="480"></canvas>
 <script>
-  var seed = document.getElementById('seed');
+  var canvas = document.getElementById('map');
+  var triangles = new TriangleMap(640, 480, 32, 14, {
+    pointLinks: false,
+    continuousX: true,
+    continuousY: false
+  });
+  var squares = new SquareMap(640, 480, 16, 12, {
+    pointLinks: false,
+    continuousX: true,
+    continuousY: true
+  });
+  var hexagons = new HexMap(640, 480, 16, 8, {
+    pointLinks: false,
+    continuousX: true,
+    continuousY: false
+  });
+  var view = new MapView(canvas, hexagons);
+</script>
+<!--script>
+  /*var seed = document.getElementById('seed');
   var width = document.getElementById('width');
   var height = document.getElementById('height');
   var magnitude = document.getElementById('magnitude');
-  var generate = document.getElementById('generate');
+  var generate = document.getElementById('generate');*/
   var canvas = document.getElementById('map');
-  var ctx = canvas.getContext('2d', {alpha: false});
+  //var ctx = canvas.getContext('2d', {alpha: false});
   //var mapgen = new MapGen(canvas);
   var map = new HexMap(40, 12, 8, canvas);
   map.draw(new Point(0, 0), 1, -1);
@@ -85,4 +109,4 @@
   canvas.addEventListener('mouseup', e => {
     map.draw(new Point(0, 0), 1, e.region);
   });
-</script>
+</script-->
