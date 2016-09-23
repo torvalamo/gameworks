@@ -1,4 +1,4 @@
-const COS_30 = Math.cos(Math.deg2rad(30));
+
 
 /**
  * Unchecked possible errors (with no explanation or intention to support):
@@ -11,7 +11,6 @@ class Map {
     //document.body.appendChild(this.canvas);
     this.resize(width, height);
     this.ctx = this.canvas.getContext('2d', {alpha: false});
-    this.view = [new Point(0, 0), 1];
     this.tiles = [];
     this.regions = [];
     
@@ -27,11 +26,10 @@ class Map {
     this.width = this.canvas.width = width;
     this.height = this.canvas.height = height;
   }
-  click(region, buttons, ctrlKey, shiftKey, altKey) {
+  click(region, buttons, ctrlKey, shiftKey, altKey, metaKey) {
     console.log(region, buttons, this.tiles[region]);
   }
   rescale(origin) {
-    console.log('in map.rescale', origin);
     var p1 = origin;
     var p2 = new Point(p1.x + this.width / origin.z,
                        p1.y + this.height / origin.z);
@@ -60,7 +58,7 @@ class Map {
         new Point(0, 0),
         new Point(0, -this.height)
       ];
-    } else if (p2.x > this.width && p2.y > this.width) {
+    } else if (p2.x > this.width && p2.y > this.height) {
       viewRects = [
         new Rectangle(new Point(p1.x, p1.y), 
                       new Point(this.width, this.height)),
@@ -96,10 +94,8 @@ class Map {
       this.rescale(origin);
       var regions = [];
       this.tiles.forEach(tile => {
-        console.log('in tile', tile.id);
         tile.getTileViews(...this.viewRects).forEach((pointSets, vrIdx) => {
           pointSets.forEach((pointSet, idx) => {
-            console.log(pointSet, tile);
             var path = pointSet.translate(this.viewTrans[vrIdx]).toPath();
             regions.push({
               path: path,

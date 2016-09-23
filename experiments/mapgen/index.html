@@ -20,7 +20,7 @@
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     margin: 10px;
-  }
+  }/*
   div {
     width: 100%;
     height: 30px;
@@ -38,12 +38,23 @@
   button {
     border-radius: none;
     padding: 2px 10px;
-  }
+  }*/
   canvas {
-    border: 1px solid #ccc;
     cursor: default;
     /*width: 100%;
-    height: calc(100% - 40px);*/
+    height: calc(100% - 40px);
+    border: 1px solid #ccc;*/
+  }
+  div.over {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    color: white;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    border-radius: 50px;
+    overflow: hidden;
   }
 </style>
 <!--div>
@@ -56,23 +67,19 @@
 <canvas id="map" width="640" height="480"></canvas>
 <script>
   var canvas = document.getElementById('map');
-  var triangles = new TriangleMap(640, 480, 32, 14, {
-    pointLinks: false,
-    continuousX: true,
-    continuousY: false
-  });
-  var squares = new SquareMap(640, 480, 16, 12, {
-    pointLinks: false,
+  var triangles = new TriangleMap(640, 480, 32, 14);
+  var squares = new SquareMap(640, 480, 16, 12);
+  var hexagons = new HexMap(640, 480, 16, 8);
+  var view = new MapView({
+    canvas: canvas,
+    map: squares,
+    hotEdges: true,
+    capture: true,
     continuousX: true,
     continuousY: true
   });
-  var hexagons = new HexMap(640, 480, 16, 8, {
-    pointLinks: false,
-    continuousX: true,
-    continuousY: false
-  });
-  var view = new MapView(canvas, squares);
 </script>
+<!--div class="over">This is over the canvas</div>
 <!--script>
   /*var seed = document.getElementById('seed');
   var width = document.getElementById('width');

@@ -1,0 +1,28 @@
+<!doctype html>
+<style>
+  section {
+    height: 200px;
+    background-color: green;
+  }
+  div {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    overflow: hidden;
+    background-color: red;
+  }
+</style>
+<section id="a"></section>
+<div>This text is still selectable outside the border.</div>
+<script>
+  var section = document.getElementById('a');
+  section.addEventListener('mouseenter', function(e) {
+    console.log('enter');
+  });
+  section.addEventListener('mouseleave', function(e) {
+    console.log('leave');
+  });
+</script>

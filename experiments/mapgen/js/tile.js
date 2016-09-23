@@ -68,7 +68,6 @@ class Tile {
     return this.path = path;
   }*/
   getTileViews(...viewRects) {
-    console.log(viewRects);
     // any point set should only be in one view,
     // because drawing the translations will take care of overlaps
     // so we dont want to draw the same area twice

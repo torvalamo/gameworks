@@ -1,16 +1,15 @@
 class Point {
-  constructor(x, y, z) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.z = z || 0;
   }
-  translate(x, y, z) {
-    return new Point(this.x + x, this.y + y, this.z + (z || 0));
+  translate(dx, dy) {
+    return new Point(this.x + dx, 
+                     this.y + dy);
   }
-  scale(delta) {
-    return new Point((this.x - delta.x) * delta.z,
-                     (this.y - delta.y) * delta.z,
-                     this.z);
+  scale(origin, amount) {
+    return new Point((this.x - origin.x) * amount,
+                     (this.y - origin.y) * amount);
   }
 }
 
@@ -23,21 +22,16 @@ class PointSet {
       new Point(Math.min(...xs), Math.min(...ys)),
       new Point(Math.max(...xs), Math.max(...ys)));
   }
-  translate(x, y, z) {
-    return new PointSet(this.points.map(point => {
-      return point.translate(x, y, z);
-    }));
+  translate(dx, dy) {
+    return new PointSet(...this.points.map(point => point.translate(dx, dy)));
   }
-  scale(delta) {
-    return new PointSet(this.points.map(point => {
-      return point.scale(delta);
-    }));
+  scale(origin, amount) {
+    return new PointSet(...this.points.map(point => point.scale(origin, amount)));
   }
   toPath() {
     if (this.path) return this.path;
     var path = new Path2D();
     this.points.forEach((point, idx) => {
-      console.log(point.x, point.y);
       if (!idx) path.moveTo(point.x, point.y);
       else path.lineTo(point.x, point.y);
     });
@@ -58,7 +52,8 @@ class Rectangle {
              r.p2.x < this.p1.x || r.p2.y < this.p1.y);
   }
   contains(p) { // point
-    return p.x >= this.p1.x && p.x < this.p2.x && p.y >= this.p1.y && p.y < this.p2.y;
+    return (p.x >= this.p1.x && p.x < this.p2.x && 
+            p.y >= this.p1.y && p.y < this.p2.y);
   }
   translate(x, y) {
     return new Rectangle(this.p1.translate(x, y),
