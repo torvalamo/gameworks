@@ -5,3 +5,8 @@
 # exclude node_modules
 /node_modules
 **/*/node_modules
+
+# exclude builds and vendor files
+/bin
+/build/nwjs
+/build/greenworks
